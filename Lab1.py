@@ -85,36 +85,3 @@ else:
     top_n = st.slider("Top estados por fallecidos", 5, 50, 20)
     st.bar_chart(agg_us.head(top_n))
 
-# ———————————————————————————————————————————————
-# e) Gráfica de sectores (simulada con barra si no hay pie nativo)
-# ———————————————————————————————————————————————
-st.header("e) Gráfica de sectores (simulada)")
-lista_paises = ["Colombia", "Chile", "Peru", "Argentina", "Mexico"]
-sel = st.multiselect("Países", sorted(df[country_col].unique().tolist()), default=lista_paises)
-agg_latam = df[df[country_col].isin(sel)].groupby(country_col)[D].sum(numeric_only=True)
-if agg_latam.sum() > 0:
-    st.write("Participación de fallecidos")
-    st.dataframe(agg_latam)
-    # Como Streamlit no tiene pie nativo, mostramos distribución normalizada como barra
-    normalized = agg_latam / agg_latam.sum()
-    st.bar_chart(normalized)
-else:
-    st.warning("Sin datos para los países seleccionados")
-
-# ———————————————————————————————————————————————
-# f) Histograma del total de fallecidos por país (simulado con bar_chart)
-# ———————————————————————————————————————————————
-st.header("f) Histograma de fallecidos por país")
-muertes_pais = df.groupby(country_col)[D].sum(numeric_only=True)
-st.bar_chart(muertes_pais)
-
-# ———————————————————————————————————————————————
-# g) Boxplot de Confirmed, Deaths, Recovered, Active (simulado con box_chart)
-# ———————————————————————————————————————————————
-st.header("g) Boxplot (simulado)")
-cols_box = [c for c in [C, D, R, A] if c and c in df.columns]
-subset = df[cols_box].fillna(0)
-subset_plot = subset.head(25)
-# Streamlit no tiene boxplot nativo, así que mostramos estadísticas resumen en tabla
-st.write("Resumen estadístico (simulación de boxplot):")
-st.dataframe(subset_plot.describe().T)
